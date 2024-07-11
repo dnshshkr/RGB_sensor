@@ -4,8 +4,8 @@ void settings()
     Serial.readStringUntil('\r\n');
 enterSettings:
   Serial.println("\n[SETTINGS]");
-  Serial.println("1: Red");
-  Serial.println("2: Amber");
+  Serial.println("1: Amber CH1");
+  Serial.println("2: Amber CH2");
   Serial.print("3: Relay type: "), relayType ? Serial.println("Active high") : Serial.println("Active low");
   Serial.println("s: Exit");
   while (!Serial.available()) {}

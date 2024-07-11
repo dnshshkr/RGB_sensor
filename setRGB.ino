@@ -6,24 +6,24 @@ begin_setRGB:
   {
     case '1':
       {
-        Serial.println("RED]");
-        Serial.println("LR: " + String(red_LR));
-        Serial.println("HR: " + String(red_HR));
-        Serial.println("LG: " + String(red_LG));
-        Serial.println("HG: " + String(red_HG));
-        Serial.println("LB: " + String(red_LB));
-        Serial.println("HB: " + String(red_HB));
+        Serial.println("AMBER CH1]");
+        Serial.println("LR: " + String(amber_LR_ch1));
+        Serial.println("HR: " + String(amber_HR_ch1));
+        Serial.println("LG: " + String(amber_LG_ch1));
+        Serial.println("HG: " + String(amber_HG_ch1));
+        Serial.println("LB: " + String(amber_LB_ch1));
+        Serial.println("HB: " + String(amber_HB_ch1));
         break;
       }
     case '2':
       {
-        Serial.println("AMBER]");
-        Serial.println("LR: " + String(amber_LR));
-        Serial.println("HR: " + String(amber_HR));
-        Serial.println("LG: " + String(amber_LG));
-        Serial.println("HG: " + String(amber_HG));
-        Serial.println("LB: " + String(amber_LB));
-        Serial.println("HB: " + String(amber_HB));
+        Serial.println("AMBER CH2]");
+        Serial.println("LR: " + String(amber_LR_ch2));
+        Serial.println("HR: " + String(amber_HR_ch2));
+        Serial.println("LG: " + String(amber_LG_ch2));
+        Serial.println("HG: " + String(amber_HG_ch2));
+        Serial.println("LB: " + String(amber_LB_ch2));
+        Serial.println("HB: " + String(amber_HB_ch2));
         break;
       }
   }
@@ -40,9 +40,9 @@ begin_setRGB:
   }
   Serial.print("\nInsert new value for ");
   if (color == '1')
-    Serial.print("RED ");
+    Serial.print("AMBER CH1 ");
   else if (color == '2')
-    Serial.print("AMBER ");
+    Serial.print("AMBER CH2");
   if (color == "lr" || color == "LR")
   {
     Serial.print("LR:");
@@ -77,71 +77,74 @@ begin_setRGB:
   String valStr = Serial.readStringUntil('\r\n');
   valStr.trim();
   float val = valStr.toFloat();
-  if (cmd == '1')
+  switch (cmd)
   {
-    if (color == "LR")
-    {
-      EEPROM.put(red_LR_addr, val);
-      red_LR = val;
-    }
-    else if (color == "HR")
-    {
-      EEPROM.put(red_HR_addr, val);
-      red_HR = val;
-    }
-    else if (color == "LG")
-    {
-      EEPROM.put(red_LG_addr, val);
-      red_LG = val;
-    }
-    else if (color == "HG")
-    {
-      EEPROM.put(red_HG_addr, val);
-      red_HG = val;
-    }
-    else if (color == "LB")
-    {
-      EEPROM.put(red_LB_addr, val);
-      red_LB = val;
-    }
-    else if (color == "HB")
-    {
-      EEPROM.put(red_HB_addr, val);
-      red_HB = val;
-    }
-  }
-  else if (cmd == '2')
-  {
-    if (color == "LR")
-    {
-      EEPROM.put(amber_LR_addr, val);
-      amber_LR = val;
-    }
-    else if (color == "HR")
-    {
-      EEPROM.put(amber_HR_addr, val);
-      amber_HR = val;
-    }
-    else if (color == "LG")
-    {
-      EEPROM.put(amber_LG_addr, val);
-      amber_LG = val;
-    }
-    else if (color == "HG")
-    {
-      EEPROM.put(amber_HG_addr, val);
-      amber_HG = val;
-    }
-    else if (color == "LB")
-    {
-      EEPROM.put(amber_LB_addr, val);
-      amber_LB = val;
-    }
-    else if (color == "HB")
-    {
-      EEPROM.put(amber_HB_addr, val);
-      amber_HB = val;
-    }
+    case '1':
+      {
+        if (color == "LR")
+        {
+          EEPROM.put(amber_LR_addr_ch1, val);
+          amber_LR_ch1 = val;
+        }
+        else if (color == "HR")
+        {
+          EEPROM.put(amber_HR_addr_ch1, val);
+          amber_HR_ch1 = val;
+        }
+        else if (color == "LG")
+        {
+          EEPROM.put(amber_LG_addr_ch1, val);
+          amber_LG_ch1 = val;
+        }
+        else if (color == "HG")
+        {
+          EEPROM.put(amber_HG_addr_ch1, val);
+          amber_HG_ch1 = val;
+        }
+        else if (color == "LB")
+        {
+          EEPROM.put(amber_LB_addr_ch1, val);
+          amber_LB_ch1 = val;
+        }
+        else if (color == "HB")
+        {
+          EEPROM.put(amber_HB_addr_ch1, val);
+          amber_HB_ch1 = val;
+        }
+      }
+    case '2':
+      {
+        if (color == "LR")
+        {
+          EEPROM.put(amber_LR_addr_ch2, val);
+          amber_LR_ch2 = val;
+        }
+        else if (color == "HR")
+        {
+          EEPROM.put(amber_HR_addr_ch2, val);
+          amber_HR_ch2 = val;
+        }
+        else if (color == "LG")
+        {
+          EEPROM.put(amber_LG_addr_ch2, val);
+          amber_LG_ch2 = val;
+        }
+        else if (color == "HG")
+        {
+          EEPROM.put(amber_HG_addr_ch2, val);
+          amber_HG_ch2 = val;
+        }
+        else if (color == "LB")
+        {
+          EEPROM.put(amber_LB_addr_ch2, val);
+          amber_LB_ch2 = val;
+        }
+        else if (color == "HB")
+        {
+          EEPROM.put(amber_HB_addr_ch2, val);
+          amber_HB_ch2 = val;
+        }
+      }
   }
   Serial.println();
   goto begin_setRGB;
