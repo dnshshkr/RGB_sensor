@@ -1,13 +1,11 @@
-void setRGB()
-{
+void setRGB() {
+  const String validCmd[] = {"S", "LR", "HR", "LG", "HG", "LB", "HB"};
 begin_setRGB:
   getVals();
   Serial.print("[SETTINGS/");
-  switch (cmd)
-  {
-    case '1':
-      {
-        Serial.println("Amber Ch1]");
+  switch (cmd) {
+    case '1': {
+        Serial.println("Yellow Ch1]");
         Serial.println("LR: " + String(amber_LR_ch1));
         Serial.println("HR: " + String(amber_HR_ch1));
         Serial.println("LG: " + String(amber_LG_ch1));
@@ -16,9 +14,8 @@ begin_setRGB:
         Serial.println("HB: " + String(amber_HB_ch1));
         break;
       }
-    case '2':
-      {
-        Serial.println("Amber Ch2]");
+    case '2': {
+        Serial.println("Yellow Ch2]");
         Serial.println("LR: " + String(amber_LR_ch2));
         Serial.println("HR: " + String(amber_HR_ch2));
         Serial.println("LG: " + String(amber_LG_ch2));
@@ -29,59 +26,65 @@ begin_setRGB:
       }
   }
   Serial.println("S : Back");
-getRGBCmd:
+waitCmd_setRGB:
   while (!Serial.available());
   String color = Serial.readStringUntil('\r\n');
   color.trim();
   color.toUpperCase();
-  if (String("SLRHRLGHGLBHB").indexOf(color) == -1)
-  {
-    Serial.println("Invalid command");
-    goto getRGBCmd;
+  bool isValid = false;
+  for (uint8_t i = 0; i < sizeof(validCmd) / sizeof(validCmd[0]); i++) {
+    if (color == validCmd[i]) {
+      isValid = true;
+      break;
+    }
   }
-  if (color == "S")
+  if (!isValid) {
+    Serial.println("Invalid command");
+    goto waitCmd_setRGB;
+  }
+  if (color == validCmd[0])
     return;
   Serial.print("Insert new value for " + color + ": ");
   while (!Serial.available());
-  String valStr = Serial.readStringUntil('\r\n');
-  valStr.trim();
-  float val = valStr.toFloat();
+  int val = Serial.parseInt();
   Serial.println(val);
-  switch (cmd)
-  {
-    case '1':
-      {
+  if (val < 0 || val > 255) {
+    Serial.println("Value out of range");
+    goto waitCmd_setRGB;
+  }
+  switch (cmd) {
+    case '1': {
         if (color == "LR")
-          EEPROM.put(amber_LR_addr_ch1, val);
+          EEPROM.update(amber_LR_addr_ch1, val);
         else if (color == "HR")
-          EEPROM.put(amber_HR_addr_ch1, val);
+          EEPROM.update(amber_HR_addr_ch1, val);
         else if (color == "LG")
-          EEPROM.put(amber_LG_addr_ch1, val);
+          EEPROM.update(amber_LG_addr_ch1, val);
         else if (color == "HG")
-          EEPROM.put(amber_HG_addr_ch1, val);
+          EEPROM.update(amber_HG_addr_ch1, val);
         else if (color == "LB")
-          EEPROM.put(amber_LB_addr_ch1, val);
+          EEPROM.update(amber_LB_addr_ch1, val);
         else if (color == "HB")
-          EEPROM.put(amber_HB_addr_ch1, val);
+          EEPROM.update(amber_HB_addr_ch1, val);
         break;
       }
-    case '2':
-      {
+    case '2': {
         if (color == "LR")
-          EEPROM.put(amber_LR_addr_ch2, val);
+          EEPROM.update(amber_LR_addr_ch2, val);
         else if (color == "HR")
-          EEPROM.put(amber_HR_addr_ch2, val);
+          EEPROM.update(amber_HR_addr_ch2, val);
         else if (color == "LG")
-          EEPROM.put(amber_LG_addr_ch2, val);
+          EEPROM.update(amber_LG_addr_ch2, val);
         else if (color == "HG")
-          EEPROM.put(amber_HG_addr_ch2, val);
+          EEPROM.update(amber_HG_addr_ch2, val);
         else if (color == "LB")
-          EEPROM.put(amber_LB_addr_ch2, val);
+          EEPROM.update(amber_LB_addr_ch2, val);
         else if (color == "HB")
-          EEPROM.put(amber_HB_addr_ch2, val);
+          EEPROM.update(amber_HB_addr_ch2, val);
         break;
       }
   }
-  Serial.println();
+  while (Serial.available())
+    Serial.readStringUntil('\r\n');
   goto begin_setRGB;
 }

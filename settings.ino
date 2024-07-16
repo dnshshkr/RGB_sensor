@@ -2,48 +2,46 @@ void settings()
 {
   while (Serial.available())
     Serial.readStringUntil('\r\n');
-enterSettings:
+begin_settings:
   Serial.println("Ver. " + String(VERSION));
   Serial.println("[SETTINGS]");
-  Serial.println("1: Amber Ch1");
-  Serial.println("2: Amber Ch2");
+  Serial.println("1: Yellow Ch1");
+  Serial.println("2: Yellow Ch2");
   Serial.print("3: Relay Type: Active "), relayType ? Serial.println("High") : Serial.println("Low");
-  Serial.println("4: Factory Reset");
+  Serial.println("4: Baud Rate: " + String(getBaudRate(EEPROM.read(baudRate_addr))));
+  Serial.println("5: Reboot");
+  Serial.println("6: Factory Reset");
   Serial.println("S: Exit");
-getSettingsCmd:
+waitCmd_settings:
   while (!Serial.available()) {}
   cmd = Serial.readStringUntil('\r\n').charAt(0);
-  //  while (Serial.available())
-  //    Serial.readStringUntil('\r\n');
-  switch (cmd)
-  {
-    case '1': case '2':
-      {
+  switch (cmd) {
+    case '1': case '2': {
         setRGB();
-        goto enterSettings;
+        goto begin_settings;
       }
-    case '3':
-      {
+    case '3': {
         relayType = !relayType;
         EEPROM.update(relayType_addr, relayType);
-        goto enterSettings;
+        goto begin_settings;
       }
-    case '4':
-      {
-        factoryReset();
-        goto enterSettings;
+    case '4': {
+        if (!baudRateSetting())
+          goto begin_settings;
+      }
+    case '5':
+      reboot();
+    case '6': {
+        if (factoryReset())
+          reboot();
+        else
+          goto begin_settings;
       }
     case 's': case 'S':
-      {
-        //        Serial.println();
-        return;
-      }
-    default:
-      {
+      return;
+    default: {
         Serial.println("Invalid command");
-        //        delay(1000);
-        //        Serial.println();
-        goto getSettingsCmd;
+        goto waitCmd_settings;
       }
   }
 }
