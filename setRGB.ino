@@ -81,7 +81,6 @@ waitCmd_setRGB:
           EEPROM.update(amber_LB_addr_ch2, val);
         else if (color == "HB")
           EEPROM.update(amber_HB_addr_ch2, val);
-        break;
       }
   }
   while (Serial.available())

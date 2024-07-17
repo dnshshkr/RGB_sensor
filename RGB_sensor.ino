@@ -1,4 +1,4 @@
-#define VERSION "2.1"
+#define VERSION "2.2"
 #include <Wire.h>
 #include <EEPROM.h>
 #include <ctype.h>
@@ -6,21 +6,23 @@
 #define runPin 6
 #define amberPin 5
 #define chPin 7
-#define amber_LR_addr_ch1 0
-#define amber_HR_addr_ch1 1
-#define amber_LG_addr_ch1 2
-#define amber_HG_addr_ch1 3
-#define amber_LB_addr_ch1 4
-#define amber_HB_addr_ch1 5
-#define amber_LR_addr_ch2 6
-#define amber_HR_addr_ch2 7
-#define amber_LG_addr_ch2 8
-#define amber_HG_addr_ch2 9
-#define amber_LB_addr_ch2 10
-#define amber_HB_addr_ch2 11
-#define relayType_addr 12
-#define baudRate_addr 13
-Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_1X);
+#define relayType_addr 0
+#define baudRate_addr 1
+#define integTime_addr 2
+#define gain_addr 3
+#define amber_LR_addr_ch1 4
+#define amber_HR_addr_ch1 5
+#define amber_LG_addr_ch1 6
+#define amber_HG_addr_ch1 7
+#define amber_LB_addr_ch1 8
+#define amber_HB_addr_ch1 9
+#define amber_LR_addr_ch2 10
+#define amber_HR_addr_ch2 11
+#define amber_LG_addr_ch2 12
+#define amber_HG_addr_ch2 13
+#define amber_LB_addr_ch2 14
+#define amber_HB_addr_ch2 15
+Adafruit_TCS34725 tcs = Adafruit_TCS34725();
 bool relayType;
 char cmd;
 uint8_t amber_LR_ch1, amber_HR_ch1, amber_LG_ch1, amber_HG_ch1, amber_LB_ch1, amber_HB_ch1;
@@ -40,6 +42,11 @@ void setup() {
   Serial.begin(getBaudRate(EEPROM.read(baudRate_addr)));
   Serial.println("RGB Sensor Ver. " + String(VERSION));
   Serial.println("Copyright (C) Delloyd R&D (M) Sdn Bhd");
+  setIntegTime(EEPROM.read(integTime_addr));
+  setGain(EEPROM.read(gain_addr));
+  float integTime = getIntegTime(EEPROM.read(integTime_addr));
+  uint8_t gain = getGain(EEPROM.read(gain_addr));
+  Serial.println("Integration Time: " + String(integTime) + " ms, Gain: " + String(gain) + "X");
   initSensor();
 }
 void loop() {
@@ -52,6 +59,7 @@ void loop() {
     relayType ? digitalWrite(runPin, LOW) : digitalWrite(runPin, HIGH);
     initSensor();
   }
+  relayType ? digitalWrite(runPin, HIGH) : digitalWrite(runPin, LOW);
   float fred, fgreen, fblue;
   uint8_t red, green, blue;
   tcs.getRGB(&fred, &fgreen, &fblue);
