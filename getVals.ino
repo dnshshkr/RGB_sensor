@@ -12,5 +12,4 @@ void getVals() {
   amber_HG_ch2 = EEPROM.read(amber_HG_addr_ch2);
   amber_LB_ch2 = EEPROM.read(amber_LB_addr_ch2);
   amber_HB_ch2 = EEPROM.read(amber_HB_addr_ch2);
-  return;
 }

@@ -1,11 +1,13 @@
 void gainSetting() {
-  Serial.println("Choose new gain:\n1: 1\n2: 4\n3: 16\n4: 60");
+  Serial.println("[SETTINGS/Gain]\n1: 1\n2: 4\n3: 16\n4: 60\nS: Back");
 waitCmd_gainSetting:
+  Serial.print("Selection: ");
   while (!Serial.available());
-  char choice = Serial.readStringUntil('\r\n').charAt(0);
-  if (String("sS").indexOf(choice) != -1)
+  char choice = toupper(Serial.readStringUntil('\r\n').charAt(0));
+  Serial.println(choice);
+  if (choice == 'S')
     return;
-  if (choice - '0' < 1 or choice - '0' > 4) {
+  if (choice - '0' < 1 || choice - '0' > 4) {
     Serial.println("Invalid input");
     goto waitCmd_gainSetting;
   }
@@ -15,51 +17,16 @@ waitCmd_gainSetting:
   return;
 }
 uint8_t getGain(uint8_t index) {
-  if (index == 0)
-    return 1;
-  else if (index == 1)
-    return 4;
-  else if (index == 2)
-    return 16;
-  else if (index == 3)
-    return 60;
-  else
-    return 1;
+  static uint8_t values[] = {1, 4, 16, 60};
+  return values[index];
 }
 void setGain(uint8_t index) {
-  if (index == 0)
-    tcs.setGain(TCS34725_GAIN_1X);
-  else if (index == 1)
-    tcs.setGain(TCS34725_GAIN_4X);
-  else if (index == 2)
-    tcs.setGain(TCS34725_GAIN_16X);
-  else if (index == 3)
-    tcs.setGain(TCS34725_GAIN_60X);
+  static uint8_t values[] = {TCS34725_GAIN_1X, TCS34725_GAIN_4X, TCS34725_GAIN_16X, TCS34725_GAIN_60X};
+  if (index >= 0 && index < sizeof(values) / sizeof(values[0]))
+    tcs.setGain(values[index]);
   else {
-    tcs.setGain(TCS34725_GAIN_1X);
+    tcs.setGain(TCS34725_GAIN_4X);
     index = 1;
   }
-  //  switch (index) {
-  //    case 0: {
-  //        tcs.setGain(TCS34725_GAIN_1X);
-  //        break;
-  //      }
-  //    case 1: {
-  //        tcs.setGain(TCS34725_GAIN_4X);
-  //        break;
-  //      }
-  //    case 2: {
-  //        tcs.setGain(TCS34725_GAIN_16X);
-  //        break;
-  //      }
-  //    case 3: {
-  //        tcs.setGain(TCS34725_GAIN_60X);
-  //        break;
-  //      }
-  //    default: {
-  //        tcs.setGain(TCS34725_GAIN_1X);
-  //        index = 1;
-  //      }
-  //  }
   EEPROM.update(gain_addr, index);
 }

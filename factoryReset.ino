@@ -3,7 +3,6 @@ bool factoryReset() {
   int8_t cd = 11;
   char choice;
   unsigned long prevmillis;
-  //  Serial.print(cd);
   do {
     if (millis() - prevmillis >= 1000)
     {
@@ -13,12 +12,11 @@ bool factoryReset() {
     }
   } while (!Serial.available() && cd >= 0);
   if (Serial.available())
-    choice = Serial.readStringUntil('\r\n').charAt(0);
+    choice = toupper(Serial.readStringUntil('\r\n').charAt(0));
   else
     choice = 'N';
-  //  Serial.println(String(choice));
   Serial.println();
-  if (toupper(choice) != 'Y') {
+  if (choice != 'Y') {
     Serial.println("Factory reset cancelled");
     return false;
   }

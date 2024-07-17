@@ -1,7 +1,5 @@
-#define VERSION "2.2"
-#include <Wire.h>
+#define VERSION "2.3"
 #include <EEPROM.h>
-#include <ctype.h>
 #include "Adafruit_TCS34725.h"
 #define runPin 6
 #define amberPin 5
@@ -40,16 +38,18 @@ void setup() {
   getVals();
   relayType = EEPROM.read(relayType_addr);
   Serial.begin(getBaudRate(EEPROM.read(baudRate_addr)));
-  Serial.println("RGB Sensor Ver. " + String(VERSION));
+  //  Serial.println("RGB Sensor Ver. " + String(VERSION));
   Serial.println("Copyright (C) Delloyd R&D (M) Sdn Bhd");
   setIntegTime(EEPROM.read(integTime_addr));
   setGain(EEPROM.read(gain_addr));
-  float integTime = getIntegTime(EEPROM.read(integTime_addr));
-  uint8_t gain = getGain(EEPROM.read(gain_addr));
-  Serial.println("Integration Time: " + String(integTime) + " ms, Gain: " + String(gain) + "X");
+  //  float integTime = getIntegTime(EEPROM.read(integTime_addr));
+  //  uint8_t gain = getGain(EEPROM.read(gain_addr));
+  //  Serial.println("Integration Time: " + String(integTime) + " ms, Gain: " + String(gain) + "X");
   initSensor();
 }
 void loop() {
+  float fred, fgreen, fblue;
+  uint8_t red, green, blue;
   if (Serial.available()) {
     if (toupper((char)Serial.read()) == 'S')
       settings();
@@ -60,30 +60,21 @@ void loop() {
     initSensor();
   }
   relayType ? digitalWrite(runPin, HIGH) : digitalWrite(runPin, LOW);
-  float fred, fgreen, fblue;
-  uint8_t red, green, blue;
   tcs.getRGB(&fred, &fgreen, &fblue);
   red = round(fred), green = round(fgreen), blue = round(fblue);
   bool channel = digitalRead(chPin);
   Serial.print("Channel ");
   channel ? Serial.println(1) : Serial.println(2);
-  Serial.print("R: " + String(red) + "\tG: " + String(green) + "\tB: " + String(blue) + "\nResult: ");
-  switch (channel) {
-    case HIGH: {
-        if (red >= amber_LR_ch1 && red <= amber_HR_ch1 && green >= amber_LG_ch1 && green <= amber_HG_ch1 && blue >= amber_LB_ch1 && blue <= amber_HB_ch1)
-          amberDetected();
-        else
-          noReading();
-        break;
-      }
-    case LOW: {
-        if (red >= amber_LR_ch2 && red <= amber_HR_ch2 && green >= amber_LG_ch2 && green <= amber_HG_ch2 && blue >= amber_LB_ch2 && blue <= amber_HB_ch2)
-          amberDetected();
-        else
-          noReading();
-        //        break;
-      }
-  }
+  Serial.print("R :"), Serial.print(red), Serial.print('\t'), Serial.print("G: "), Serial.print(green), Serial.print('\t'), Serial.print("B: "), Serial.print(blue), Serial.println(), Serial.print("Result: ");
+  if ((channel == HIGH && red >= amber_LR_ch1 && red <= amber_HR_ch1 && green >= amber_LG_ch1 && green <= amber_HG_ch1 && blue >= amber_LB_ch1 && blue <= amber_HB_ch1) ||
+      (channel == LOW && red >= amber_LR_ch2 && red <= amber_HR_ch2 && green >= amber_LG_ch2 && green <= amber_HG_ch2 && blue >= amber_LB_ch2 && blue <= amber_HB_ch2))
+    amberDetected();
+  else
+    noReading();
+}
+void flushSerial() {
+  while (Serial.available())
+    Serial.readStringUntil('\r\n');
 }
 void amberDetected() {
   Serial.println("Yellow\n");

@@ -1,7 +1,6 @@
 void settings()
 {
-  while (Serial.available())
-    Serial.readStringUntil('\r\n');
+  flushSerial();
 begin_settings:
   Serial.println("Ver. " + String(VERSION));
   Serial.println("[SETTINGS]");
@@ -15,8 +14,8 @@ begin_settings:
   Serial.println("8: Factory Reset");
   Serial.println("S: Exit");
 waitCmd_settings:
-  while (!Serial.available()) {}
-  cmd = Serial.readStringUntil('\r\n').charAt(0);
+  while (!Serial.available());
+  cmd = toupper(Serial.readStringUntil('\r\n').charAt(0));
   switch (cmd) {
     case '1': case '2': {
         setRGB();
@@ -49,7 +48,7 @@ waitCmd_settings:
         else
           goto begin_settings;
       }
-    case 's': case 'S':
+    case 'S':
       return;
     default: {
         Serial.println("Invalid command");
