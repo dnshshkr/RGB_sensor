@@ -17,7 +17,7 @@ bool factoryReset() {
     choice = 'N';
   Serial.println();
   if (choice != 'Y') {
-    Serial.println("Factory reset cancelled");
+    Serial.println("Factory reset aborted");
     return false;
   }
   Serial.println("Resetting all " + String(EEPROM.length()) + " bytes...");

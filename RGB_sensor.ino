@@ -1,4 +1,4 @@
-#define VERSION "2.3"
+#define VERSION "2.4"
 #include <EEPROM.h>
 #include "Adafruit_TCS34725.h"
 #define runPin 6
@@ -39,7 +39,7 @@ void setup() {
   relayType = EEPROM.read(relayType_addr);
   Serial.begin(getBaudRate(EEPROM.read(baudRate_addr)));
   //  Serial.println("RGB Sensor Ver. " + String(VERSION));
-  Serial.println("Copyright (C) Delloyd R&D (M) Sdn Bhd");
+  //  Serial.println("Copyright (C) Delloyd R&D (M) Sdn Bhd");
   setIntegTime(EEPROM.read(integTime_addr));
   setGain(EEPROM.read(gain_addr));
   //  float integTime = getIntegTime(EEPROM.read(integTime_addr));
@@ -65,22 +65,18 @@ void loop() {
   bool channel = digitalRead(chPin);
   Serial.print("Channel ");
   channel ? Serial.println(1) : Serial.println(2);
-  Serial.print("R :"), Serial.print(red), Serial.print('\t'), Serial.print("G: "), Serial.print(green), Serial.print('\t'), Serial.print("B: "), Serial.print(blue), Serial.println(), Serial.print("Result: ");
+  Serial.print("R :"), Serial.print(red), Serial.print("\tG: "), Serial.print(green), Serial.print("\tB: "), Serial.print(blue), Serial.println(), Serial.print("Result: ");
   if ((channel == HIGH && red >= amber_LR_ch1 && red <= amber_HR_ch1 && green >= amber_LG_ch1 && green <= amber_HG_ch1 && blue >= amber_LB_ch1 && blue <= amber_HB_ch1) ||
-      (channel == LOW && red >= amber_LR_ch2 && red <= amber_HR_ch2 && green >= amber_LG_ch2 && green <= amber_HG_ch2 && blue >= amber_LB_ch2 && blue <= amber_HB_ch2))
-    amberDetected();
-  else
-    noReading();
+      (channel == LOW && red >= amber_LR_ch2 && red <= amber_HR_ch2 && green >= amber_LG_ch2 && green <= amber_HG_ch2 && blue >= amber_LB_ch2 && blue <= amber_HB_ch2)) {
+    Serial.println("Yellow\n");
+    relayType ? digitalWrite(amberPin, HIGH) : digitalWrite(amberPin, LOW);
+  }
+  else {
+    Serial.println("No reading\n");
+    relayType ? digitalWrite(amberPin, LOW) : digitalWrite(amberPin, HIGH);
+  }
 }
 void flushSerial() {
   while (Serial.available())
     Serial.readStringUntil('\r\n');
-}
-void amberDetected() {
-  Serial.println("Yellow\n");
-  relayType ? digitalWrite(amberPin, HIGH) : digitalWrite(amberPin, LOW);
-}
-void noReading() {
-  Serial.println("No reading\n");
-  relayType ? digitalWrite(amberPin, LOW) : digitalWrite(amberPin, HIGH);
 }

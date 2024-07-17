@@ -9,7 +9,7 @@ begin_settings:
   Serial.print("3: Relay Type: Active "), relayType ? Serial.println("High") : Serial.println("Low");
   Serial.println("4: Baud Rate: " + String(getBaudRate(EEPROM.read(baudRate_addr))));
   Serial.println("5: Integration Time: " + String(getIntegTime(EEPROM.read(integTime_addr))) + " ms");
-  Serial.println("6: Gain: " + String(getGain(EEPROM.read(gain_addr))) + "X");
+  Serial.println("6: Gain: " + String(getGain(EEPROM.read(gain_addr))) + "x");
   Serial.println("7: Reboot");
   Serial.println("8: Factory Reset");
   Serial.println("S: Exit");

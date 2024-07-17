@@ -2,10 +2,9 @@ void setRGB() {
   const String validCmd[] = {"S", "LR", "HR", "LG", "HG", "LB", "HB"};
 begin_setRGB:
   getVals();
-  Serial.print("[SETTINGS/");
+  Serial.print("[SETTINGS/Yellow Ch"), Serial.print(cmd), Serial.println("]");
   switch (cmd) {
     case '1': {
-        Serial.println("Yellow Ch1]");
         Serial.println("LR: " + String(amber_LR_ch1));
         Serial.println("HR: " + String(amber_HR_ch1));
         Serial.println("LG: " + String(amber_LG_ch1));
@@ -15,14 +14,12 @@ begin_setRGB:
         break;
       }
     case '2': {
-        Serial.println("Yellow Ch2]");
         Serial.println("LR: " + String(amber_LR_ch2));
         Serial.println("HR: " + String(amber_HR_ch2));
         Serial.println("LG: " + String(amber_LG_ch2));
         Serial.println("HG: " + String(amber_HG_ch2));
         Serial.println("LB: " + String(amber_LB_ch2));
         Serial.println("HB: " + String(amber_HB_ch2));
-        break;
       }
   }
   Serial.println("S : Back");
@@ -159,7 +156,7 @@ waitCmd_setRGB2:
   flushSerial();
   goto begin_setRGB;
 }
-bool checkValue(uint8_t low, uint8_t high, char cur[2]) {
+bool checkValue(uint8_t low, uint8_t high, const char* cur) {
   if (cur[0] == 'L') {
     if (low > high) {
       Serial.print(cur), Serial.print("("), Serial.print(low), Serial.print(")"), Serial.print(" cannot be larger than H"), Serial.print(cur[1]), Serial.print("("), Serial.print(high), Serial.println(")");

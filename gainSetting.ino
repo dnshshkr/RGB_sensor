@@ -17,11 +17,11 @@ waitCmd_gainSetting:
   return;
 }
 uint8_t getGain(uint8_t index) {
-  static uint8_t values[] = {1, 4, 16, 60};
+  static const uint8_t values[] = {1, 4, 16, 60};
   return values[index];
 }
 void setGain(uint8_t index) {
-  static uint8_t values[] = {TCS34725_GAIN_1X, TCS34725_GAIN_4X, TCS34725_GAIN_16X, TCS34725_GAIN_60X};
+  static const tcs34725Gain_t values[] = {TCS34725_GAIN_1X, TCS34725_GAIN_4X, TCS34725_GAIN_16X, TCS34725_GAIN_60X};
   if (index >= 0 && index < sizeof(values) / sizeof(values[0]))
     tcs.setGain(values[index]);
   else {

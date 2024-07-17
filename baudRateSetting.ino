@@ -16,7 +16,7 @@ waitCmd_baudRateSetting:
   return true;
 }
 uint32_t getBaudRate(uint8_t index) {
-  static uint32_t values[] = {9600, 19200, 38400, 57600, 74880, 115200};
+  static const uint32_t values[] = {9600, 19200, 38400, 57600, 74880, 115200};
   uint32_t baudRate;
   if (index >= 0 && index < sizeof(values) / sizeof(values[0]))
     baudRate = values[index];
