@@ -3,7 +3,8 @@ void integrationTimeSetting() {
 waitCmd_integrationTimeSetting:
   Serial.print("Selection: ");
   while (!Serial.available());
-  String choiceStr = Serial.readStringUntil('\r\n');
+  //  String choiceStr = Serial.readStringUntil('\r\n');
+  String choiceStr = Serial.readStringUntil('\n');
   choiceStr.trim();
   Serial.println(choiceStr);
   choiceStr.toUpperCase();
@@ -16,7 +17,7 @@ waitCmd_integrationTimeSetting:
   }
   setIntegTime(choice - 1);
   float integTime = getIntegTime(choice - 1);
-  Serial.println("Integration time set to " + String(integTime));
+  Serial.print("Integration time set to "), Serial.println(integTime);
   return;
 }
 float getIntegTime(uint8_t index) {

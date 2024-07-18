@@ -1,4 +1,4 @@
-#define VERSION "2.4"
+#define VERSION "2.5"
 #include <EEPROM.h>
 #include "Adafruit_TCS34725.h"
 #define runPin 6
@@ -22,7 +22,7 @@
 #define amber_HB_addr_ch2 15
 Adafruit_TCS34725 tcs = Adafruit_TCS34725();
 bool relayType;
-char cmd;
+//char cmd;
 uint8_t amber_LR_ch1, amber_HR_ch1, amber_LG_ch1, amber_HG_ch1, amber_LB_ch1, amber_HB_ch1;
 uint8_t amber_LR_ch2, amber_HR_ch2, amber_LG_ch2, amber_HG_ch2, amber_LB_ch2, amber_HB_ch2;
 void (*resMcu)() = 0;
@@ -38,18 +38,18 @@ void setup() {
   getVals();
   relayType = EEPROM.read(relayType_addr);
   Serial.begin(getBaudRate(EEPROM.read(baudRate_addr)));
-  //  Serial.println("RGB Sensor Ver. " + String(VERSION));
-  //  Serial.println("Copyright (C) Delloyd R&D (M) Sdn Bhd");
+  printInfo();
   setIntegTime(EEPROM.read(integTime_addr));
   setGain(EEPROM.read(gain_addr));
-  //  float integTime = getIntegTime(EEPROM.read(integTime_addr));
-  //  uint8_t gain = getGain(EEPROM.read(gain_addr));
-  //  Serial.println("Integration Time: " + String(integTime) + " ms, Gain: " + String(gain) + "X");
+  float integTime = getIntegTime(EEPROM.read(integTime_addr));
+  uint8_t gain = getGain(EEPROM.read(gain_addr));
+  Serial.print("Integration Time: "), Serial.print(integTime), Serial.print(" ms, Gain: "), Serial.print(gain), Serial.println("x");
   initSensor();
 }
 void loop() {
-  float fred, fgreen, fblue;
+  char cmd;
   uint8_t red, green, blue;
+  float fred, fgreen, fblue;
   if (Serial.available()) {
     if (toupper((char)Serial.read()) == 'S')
       settings();
@@ -76,7 +76,12 @@ void loop() {
     relayType ? digitalWrite(amberPin, LOW) : digitalWrite(amberPin, HIGH);
   }
 }
+void printInfo() {
+  Serial.print("RGB Sensor Ver. "), Serial.println(VERSION);
+  Serial.println("Copyright(C) Delloyd R&D (M) Sdn Bhd");
+}
 void flushSerial() {
   while (Serial.available())
-    Serial.readStringUntil('\r\n');
+    Serial.read();
+  //    Serial.readStringUntil('\r\n');
 }

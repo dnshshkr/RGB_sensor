@@ -3,7 +3,8 @@ bool baudRateSetting() {
 waitCmd_baudRateSetting:
   Serial.print("Selection: ");
   while (!Serial.available());
-  char choice = toupper(Serial.readStringUntil('\r\n').charAt(0));
+  //  char choice = toupper(Serial.readStringUntil('\r\n').charAt(0));
+  char choice = toupper(Serial.readStringUntil('\n').charAt(0));
   Serial.println(choice);
   if (choice == 'S')
     return false;
