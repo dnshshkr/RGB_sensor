@@ -6,8 +6,10 @@ void initSensor() {
   while (!sensorInit) {
     relayType ? digitalWrite(amberPin, LOW) : digitalWrite(amberPin, HIGH);
     if (Serial.available()) {
-      if (toupper(Serial.readStringUntil('\n').charAt(0)) == 'S')
+      if (toupper(Serial.readStringUntil('\n').charAt(0)) == 'S') {
+        turnOffOutputs();
         settings();
+      }
     }
     if (prevmillis == 0 || millis() - prevmillis >= 500) {
       bl = !bl;

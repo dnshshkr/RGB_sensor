@@ -1,4 +1,4 @@
-#define VERSION "2.5"
+#define VERSION "2.6"
 #include <EEPROM.h>
 #include "Adafruit_TCS34725.h"
 #define runPin 6
@@ -51,8 +51,10 @@ void loop() {
   uint8_t red, green, blue;
   float fred, fgreen, fblue;
   if (Serial.available()) {
-    if (toupper((char)Serial.read()) == 'S')
+    if (toupper((char)Serial.read()) == 'S') {
+      turnOffOutputs();
       settings();
+    }
   }
   if (!checkConnection()) {
     Serial.println("Sensor disconnected. Reconnecting...");
@@ -74,6 +76,17 @@ void loop() {
   else {
     Serial.println("No reading\n");
     relayType ? digitalWrite(amberPin, LOW) : digitalWrite(amberPin, HIGH);
+  }
+}
+void turnOffOutputs() {
+  digitalWrite(LED_BUILTIN, LOW);
+  if (relayType) {
+    digitalWrite(runPin, LOW);
+    digitalWrite(amberPin, LOW);
+  }
+  else {
+    digitalWrite(runPin, HIGH);
+    digitalWrite(amberPin, HIGH);
   }
 }
 void printInfo() {
