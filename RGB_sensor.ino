@@ -1,4 +1,4 @@
-#define VERSION "2.6"
+#define VERSION "2.7"
 #include <EEPROM.h>
 #include "Adafruit_TCS34725.h"
 #define runPin 6
@@ -67,7 +67,7 @@ void loop() {
   bool channel = digitalRead(chPin);
   Serial.print("Channel ");
   channel ? Serial.println(1) : Serial.println(2);
-  Serial.print("R :"), Serial.print(red), Serial.print("\tG: "), Serial.print(green), Serial.print("\tB: "), Serial.print(blue), Serial.println(), Serial.print("Result: ");
+  Serial.print("R: "), Serial.print(red), Serial.print("\tG: "), Serial.print(green), Serial.print("\tB: "), Serial.print(blue), Serial.println(), Serial.print("Result: ");
   if ((channel == HIGH && red >= amber_LR_ch1 && red <= amber_HR_ch1 && green >= amber_LG_ch1 && green <= amber_HG_ch1 && blue >= amber_LB_ch1 && blue <= amber_HB_ch1) ||
       (channel == LOW && red >= amber_LR_ch2 && red <= amber_HR_ch2 && green >= amber_LG_ch2 && green <= amber_HG_ch2 && blue >= amber_LB_ch2 && blue <= amber_HB_ch2)) {
     Serial.println("Yellow\n");

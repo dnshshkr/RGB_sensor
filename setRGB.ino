@@ -31,6 +31,8 @@ waitCmd_setRGB1:
   color.toUpperCase();
   bool isValid = false;
   for (uint8_t i = 0; i < sizeof(validCmd) / sizeof(validCmd[0]); i++) {
+    if (color == '\0')
+      goto waitCmd_setRGB1;
     if (color == validCmd[i]) {
       isValid = true;
       break;
@@ -45,8 +47,8 @@ waitCmd_setRGB1:
 waitCmd_setRGB2:
   Serial.print("Insert new value for " + color + " (0-255): ");
   while (!Serial.available());
-  int val = Serial.parseInt();
-  flushSerial();
+  int val = Serial.readStringUntil('\n').toInt();
+  //  flushSerial();
   Serial.println(val);
   if (val < 0 || val > 255) {
     Serial.println("Value out of range");
