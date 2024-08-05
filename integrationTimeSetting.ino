@@ -3,6 +3,7 @@ void integrationTimeSetting() {
   Serial.println("[SETTINGS/Integration TIme]");
   for (uint8_t i = 0; i < sizeof(integTimes) / sizeof(integTimes[0]); i++)
     Serial.print(i + 1), Serial.print(": "), Serial.println(integTimes[i]);
+  printBack();
 waitCmd_integrationTimeSetting:
   Serial.print("Selection: ");
   while (!Serial.available());

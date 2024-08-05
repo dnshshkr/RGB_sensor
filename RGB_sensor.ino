@@ -1,4 +1,4 @@
-#define VERSION "2.10"
+#define VERSION "2.11"
 #include <EEPROM.h>
 #include "Adafruit_TCS34725.h"
 #define runPin 6
@@ -99,4 +99,7 @@ void printInfo() {
 void flushSerial() {
   while (Serial.available())
     Serial.read();
+}
+void printBack() {
+  Serial.println("S: Back");
 }

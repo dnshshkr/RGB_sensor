@@ -3,6 +3,7 @@ void gainSetting() {
   Serial.println("[SETTINGS/Gain]");
   for (uint8_t i = 0; i < sizeof(gains) / sizeof(gains[0]); i++)
     Serial.print(i + 1), Serial.print(": "), Serial.println(gains[i]);
+  printBack();
 waitCmd_gainSetting:
   Serial.print("Selection: ");
   while (!Serial.available());

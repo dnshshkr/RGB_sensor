@@ -3,6 +3,7 @@ bool baudRateSetting() {
   Serial.println("[SETTINGS/Baud Rate]");
   for (uint8_t i = 0; i < sizeof(baudRates) / sizeof(baudRates[0]); i++)
     Serial.print(i + 1), Serial.print(": "), Serial.println(baudRates[i]);
+  printBack();
 waitCmd_baudRateSetting:
   Serial.print("Selection: ");
   while (!Serial.available());

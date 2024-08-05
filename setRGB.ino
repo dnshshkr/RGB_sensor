@@ -22,7 +22,7 @@ begin_setRGB:
         Serial.print("HB: "), Serial.println(amber_HB_ch2);
       }
   }
-  Serial.println("S : Back");
+  printBack();
 waitCmd_setRGB1:
   while (!Serial.available());
   String color = Serial.readStringUntil('\n');
