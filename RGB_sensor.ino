@@ -1,4 +1,4 @@
-#define VERSION "2.8"
+#define VERSION "2.9"
 #include <EEPROM.h>
 #include "Adafruit_TCS34725.h"
 #define runPin 6
@@ -22,7 +22,6 @@
 #define amber_HB_addr_ch2 15
 Adafruit_TCS34725 tcs = Adafruit_TCS34725();
 bool relayType;
-//char cmd;
 uint8_t amber_LR_ch1, amber_HR_ch1, amber_LG_ch1, amber_HG_ch1, amber_LB_ch1, amber_HB_ch1;
 uint8_t amber_LR_ch2, amber_HR_ch2, amber_LG_ch2, amber_HG_ch2, amber_LB_ch2, amber_HB_ch2;
 void (*resMcu)() = 0;

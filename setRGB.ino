@@ -45,15 +45,20 @@ waitCmd_setRGB1:
     return;
   uint8_t minVal, maxVal;
   getMinMax(cmd, color, minVal, maxVal);
-waitCmd_setRGB2:
-  Serial.print("Insert new value for " + color + " ("), Serial.print(minVal), Serial.print("-"), Serial.print(maxVal), Serial.print("): ");
-  while (!Serial.available());
-  int val = Serial.readStringUntil('\n').toInt();
-  Serial.println(val);
-  if (val < minVal || val > maxVal) {
-    Serial.println("Value out of range");
-    goto waitCmd_setRGB2;
-  }
+  int val;
+  bool outOfRange;
+  do {
+    Serial.print("Insert new value for " + color + " ("), Serial.print(minVal), Serial.print("-"), Serial.print(maxVal), Serial.print("): ");
+    while (!Serial.available());
+    val = Serial.readStringUntil('\n').toInt();
+    Serial.println(val);
+    if (val < minVal || val > maxVal) {
+      outOfRange = true;
+      Serial.println("Value out of range");
+    }
+    else
+      outOfRange = false;
+  } while (outOfRange);
   switch (cmd) {
     case '1': {
         if (color == "LR")
