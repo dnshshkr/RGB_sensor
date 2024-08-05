@@ -25,13 +25,12 @@ begin_setRGB:
   Serial.println("S : Back");
 waitCmd_setRGB1:
   while (!Serial.available());
-  //  String color = Serial.readStringUntil('\r\n');
   String color = Serial.readStringUntil('\n');
   color.trim();
   color.toUpperCase();
   bool isValid = false;
   for (uint8_t i = 0; i < sizeof(validCmd) / sizeof(validCmd[0]); i++) {
-    if (color == '\0')
+    if (color == "\0")
       goto waitCmd_setRGB1;
     if (color == validCmd[i]) {
       isValid = true;
@@ -44,114 +43,103 @@ waitCmd_setRGB1:
   }
   if (color == validCmd[0])
     return;
+  uint8_t minVal, maxVal;
+  getMinMax(cmd, color, minVal, maxVal);
 waitCmd_setRGB2:
-  Serial.print("Insert new value for " + color + " (0-255): ");
+  Serial.print("Insert new value for " + color + " ("), Serial.print(minVal), Serial.print("-"), Serial.print(maxVal), Serial.print("): ");
   while (!Serial.available());
   int val = Serial.readStringUntil('\n').toInt();
-  //  flushSerial();
   Serial.println(val);
-  if (val < 0 || val > 255) {
+  if (val < minVal || val > maxVal) {
     Serial.println("Value out of range");
     goto waitCmd_setRGB2;
   }
   switch (cmd) {
     case '1': {
-        if (color == "LR") {
-          if (checkValue(val, amber_HR_ch1, "LR"))
-            EEPROM.update(amber_LR_addr_ch1, val);
-          else
-            goto waitCmd_setRGB2;
-        }
-        else if (color == "HR") {
-          if (checkValue(amber_LR_ch1, val, "HR"))
-            EEPROM.update(amber_HR_addr_ch1, val);
-          else
-            goto waitCmd_setRGB2;
-        }
-        else if (color == "LG") {
-          if (checkValue(val, amber_HG_ch1, "LG"))
-            EEPROM.update(amber_LG_addr_ch1, val);
-          else
-            goto waitCmd_setRGB2;
-        }
-        else if (color == "HG") {
-          if (checkValue(amber_LG_ch1, val, "HG"))
-            EEPROM.update(amber_HG_addr_ch1, val);
-          else
-            goto waitCmd_setRGB2;
-        }
-        else if (color == "LB") {
-          if (checkValue(val, amber_HB_ch1, "LB"))
-            EEPROM.update(amber_LB_addr_ch1, val);
-          else
-            goto waitCmd_setRGB2;
-        }
-        else if (color == "HB") {
-          if (checkValue(amber_LB_ch1, val, "HB"))
-            EEPROM.update(amber_HB_addr_ch1, val);
-          else
-            goto waitCmd_setRGB2;
-        }
+        if (color == "LR")
+          EEPROM.update(amber_LR_addr_ch1, val);
+        else if (color == "HR")
+          EEPROM.update(amber_HR_addr_ch1, val);
+        else if (color == "LG")
+          EEPROM.update(amber_LG_addr_ch1, val);
+        else if (color == "HG")
+          EEPROM.update(amber_HG_addr_ch1, val);
+        else if (color == "LB")
+          EEPROM.update(amber_LB_addr_ch1, val);
+        else if (color == "HB")
+          EEPROM.update(amber_HB_addr_ch1, val);
         break;
       }
     case '2': {
-        if (color == "LR") {
-          if (checkValue(val, amber_HR_ch2, "LR"))
-            EEPROM.update(amber_LR_addr_ch2, val);
-          else
-            goto waitCmd_setRGB2;
-        }
-        else if (color == "HR") {
-          if (checkValue(amber_LR_ch2, val, "HR"))
-            EEPROM.update(amber_HR_addr_ch2, val);
-          else
-            goto waitCmd_setRGB2;
-        }
-        else if (color == "LG") {
-          if (checkValue(val, amber_HG_ch2, "LG"))
-            EEPROM.update(amber_LG_addr_ch2, val);
-          else
-            goto waitCmd_setRGB2;
-        }
-        else if (color == "HG") {
-          if (checkValue(amber_LG_ch2, val, "HG"))
-            EEPROM.update(amber_HG_addr_ch2, val);
-          else
-            goto waitCmd_setRGB2;
-        }
-        else if (color == "LB") {
-          if (checkValue(val, amber_HB_ch2, "LB"))
-            EEPROM.update(amber_LB_addr_ch2, val);
-          else
-            goto waitCmd_setRGB2;
-        }
-        else if (color == "HB") {
-          if (checkValue(amber_LB_ch2, val, "HB"))
-            EEPROM.update(amber_HB_addr_ch2, val);
-          else
-            goto waitCmd_setRGB2;
-        }
+        if (color == "LR")
+          EEPROM.update(amber_LR_addr_ch2, val);
+        else if (color == "HR")
+          EEPROM.update(amber_HR_addr_ch2, val);
+        else if (color == "LG")
+          EEPROM.update(amber_LG_addr_ch2, val);
+        else if (color == "HG")
+          EEPROM.update(amber_HG_addr_ch2, val);
+        else if (color == "LB")
+          EEPROM.update(amber_LB_addr_ch2, val);
+        else if (color == "HB")
+          EEPROM.update(amber_HB_addr_ch2, val);
       }
   }
-  //  flushSerial();
   goto begin_setRGB;
 }
-bool checkValue(uint8_t low, uint8_t high, const char* cur) {
-  if (cur[0] == 'L') {
-    if (low > high) {
-      Serial.print(cur), Serial.print("("), Serial.print(low), Serial.print(")"), Serial.print(" must be lower than H"), Serial.print(cur[1]), Serial.print("("), Serial.print(high), Serial.println(")");
-      return false;
+
+void getMinMax(char channel, String color, uint8_t &minVal, uint8_t &maxVal) {
+  const uint8_t absMin = 0, absMax = 255;
+  if (channel == '1') {
+    if (color == "LR") {
+      minVal = absMin;
+      maxVal = amber_HR_ch1;
     }
-    else
-      return true;
+    else if (color == "HR") {
+      minVal = amber_LR_ch1;
+      maxVal = absMax;
+    }
+    else if (color == "LG") {
+      minVal = absMin;
+      maxVal = amber_HG_ch1;
+    }
+    else if (color == "HR") {
+      minVal = amber_LG_ch1;
+      maxVal = absMax;
+    }
+    else if (color == "LB") {
+      minVal = absMin;
+      maxVal = amber_HB_ch1;
+    }
+    else {
+      minVal = amber_LB_ch1;
+      maxVal = absMax;
+    }
   }
-  //  else if (cur[0] == 'H') {
   else {
-    if (high < low) {
-      Serial.print(cur), Serial.print("("), Serial.print(high), Serial.print(")"), Serial.print(" must be higher than L"), Serial.print(cur[1]), Serial.print("("), Serial.print(low), Serial.println(")");
-      return false;
+    if (color == "LR") {
+      minVal = absMin;
+      maxVal = amber_HR_ch2;
     }
-    else
-      return true;
+    else if (color == "HR") {
+      minVal = amber_LR_ch2;
+      maxVal = absMax;
+    }
+    else if (color == "LG") {
+      minVal = absMin;
+      maxVal = amber_HG_ch2;
+    }
+    else if (color == "HR") {
+      minVal = amber_LG_ch2;
+      maxVal = absMax;
+    }
+    else if (color == "LB") {
+      minVal = absMin;
+      maxVal = amber_HB_ch2;
+    }
+    else {
+      minVal = amber_LB_ch2;
+      maxVal = absMax;
+    }
   }
 }

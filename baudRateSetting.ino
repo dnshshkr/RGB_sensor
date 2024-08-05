@@ -1,9 +1,11 @@
+static const uint32_t baudRates[] = {9600, 19200, 38400, 57600, 74880, 115200};
 bool baudRateSetting() {
-  Serial.println("[SETTINGS/Baud Rate]\n1: 9600\n2: 19200\n3: 38400\n4: 57600\n5: 74880\n6: 115200\nS: Back");
+  Serial.println("[SETTINGS/Baud Rate]");
+  for (uint8_t i = 0; i < sizeof(baudRates) / sizeof(baudRates[0]); i++)
+    Serial.print(i + 1), Serial.print(": "), Serial.println(baudRates[i]);
 waitCmd_baudRateSetting:
   Serial.print("Selection: ");
   while (!Serial.available());
-  //  char choice = toupper(Serial.readStringUntil('\r\n').charAt(0));
   char choice = toupper(Serial.readStringUntil('\n').charAt(0));
   Serial.println(choice);
   if (choice == 'S')
@@ -17,10 +19,9 @@ waitCmd_baudRateSetting:
   return true;
 }
 uint32_t getBaudRate(uint8_t index) {
-  static const uint32_t values[] = {9600, 19200, 38400, 57600, 74880, 115200};
   uint32_t baudRate;
-  if (index >= 0 && index < sizeof(values) / sizeof(values[0]))
-    baudRate = values[index];
+  if (index >= 0 && index < sizeof(baudRates) / sizeof(baudRates[0]))
+    baudRate = baudRates[index];
   else {
     baudRate = 9600;
     index = 0;

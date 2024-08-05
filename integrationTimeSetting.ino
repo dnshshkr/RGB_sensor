@@ -1,5 +1,8 @@
+static const float integTimes[] = {2.4, 24.0, 50.0, 60.0, 101.0, 120.0, 154.0, 180.0, 199.0, 240.0, 300.0, 360.0, 401.0, 420.0, 480.0, 499.0, 540.0, 600.0, 614.0};
 void integrationTimeSetting() {
-  Serial.println("[SETTINGS/Integration Time]\n1 : 2.4\n2 : 24\n3 : 50\n4 : 60\n5 : 101\n6 : 120\n7 : 154\n8 : 180\n9 : 199\n10: 240\n11: 300\n12: 360\n13: 401\n14: 420\n15: 480\n16: 499\n17: 540\n18: 600\n19: 614\nS : Back");
+  Serial.println("[SETTINGS/Integration TIme]");
+  for (uint8_t i = 0; i < sizeof(integTimes) / sizeof(integTimes[0]); i++)
+    Serial.print(i + 1), Serial.print(": "), Serial.println(integTimes[i]);
 waitCmd_integrationTimeSetting:
   Serial.print("Selection: ");
   while (!Serial.available());
@@ -21,8 +24,7 @@ waitCmd_integrationTimeSetting:
   return;
 }
 float getIntegTime(uint8_t index) {
-  static const float values[] = {2.4, 24.0, 50.0, 60.0, 101.0, 120.0, 154.0, 180.0, 199.0, 240.0, 300.0, 360.0, 401.0, 420.0, 480.0, 499.0, 540.0, 600.0, 614.0};
-  return values[index];
+  return integTimes[index];
 }
 void setIntegTime(uint8_t index) {
   static const uint8_t values[] = {

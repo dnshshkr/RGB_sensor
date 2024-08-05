@@ -1,5 +1,8 @@
+static const uint8_t gains[] = {1, 4, 16, 60};
 void gainSetting() {
-  Serial.println("[SETTINGS/Gain]\n1: 1\n2: 4\n3: 16\n4: 60\nS: Back");
+  Serial.println("[SETTINGS/Gain]");
+  for (uint8_t i = 0; i < sizeof(gains) / sizeof(gains[0]); i++)
+    Serial.print(i + 1), Serial.print(": "), Serial.println(gains[i]);
 waitCmd_gainSetting:
   Serial.print("Selection: ");
   while (!Serial.available());
@@ -18,8 +21,7 @@ waitCmd_gainSetting:
   return;
 }
 uint8_t getGain(uint8_t index) {
-  static const uint8_t values[] = {1, 4, 16, 60};
-  return values[index];
+  return gains[index];
 }
 void setGain(uint8_t index) {
   static const tcs34725Gain_t values[] = {TCS34725_GAIN_1X, TCS34725_GAIN_4X, TCS34725_GAIN_16X, TCS34725_GAIN_60X};
