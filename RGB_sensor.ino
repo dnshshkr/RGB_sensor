@@ -1,4 +1,4 @@
-#define VERSION "2.9"
+#define VERSION "2.10"
 #include <EEPROM.h>
 #include "Adafruit_TCS34725.h"
 #define runPin 6
@@ -77,6 +77,10 @@ void loop() {
     relayType ? digitalWrite(amberPin, LOW) : digitalWrite(amberPin, HIGH);
   }
 }
+bool checkConnection() {
+  Wire.beginTransmission(TCS34725_ADDRESS);
+  return (Wire.endTransmission() == 0);
+}
 void turnOffOutputs() {
   digitalWrite(LED_BUILTIN, LOW);
   if (relayType) {
@@ -95,5 +99,4 @@ void printInfo() {
 void flushSerial() {
   while (Serial.available())
     Serial.read();
-  //    Serial.readStringUntil('\r\n');
 }

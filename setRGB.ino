@@ -92,7 +92,6 @@ waitCmd_setRGB1:
   }
   goto begin_setRGB;
 }
-
 void getMinMax(char channel, String color, uint8_t &minVal, uint8_t &maxVal) {
   const uint8_t absMin = 0, absMax = 255;
   if (channel == '1') {
