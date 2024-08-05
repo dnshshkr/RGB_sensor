@@ -23,7 +23,7 @@ begin_setRGB:
       }
   }
   printBack();
-waitCmd_setRGB1:
+waitCmd_setRGB:
   while (!Serial.available());
   String color = Serial.readStringUntil('\n');
   color.trim();
@@ -31,7 +31,7 @@ waitCmd_setRGB1:
   bool isValid = false;
   for (uint8_t i = 0; i < sizeof(validCmd) / sizeof(validCmd[0]); i++) {
     if (color == "\0")
-      goto waitCmd_setRGB1;
+      goto waitCmd_setRGB;
     if (color == validCmd[i]) {
       isValid = true;
       break;
@@ -39,7 +39,7 @@ waitCmd_setRGB1:
   }
   if (!isValid) {
     Serial.println("Invalid command");
-    goto waitCmd_setRGB1;
+    goto waitCmd_setRGB;
   }
   if (color == validCmd[0])
     return;
